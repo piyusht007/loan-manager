@@ -1,10 +1,14 @@
 package com.example.loan.management.loanmanager.service;
 
-import com.example.loan.management.loanmanager.api.TaskApprovalRequest;
+import com.example.loan.management.loanmanager.api.TaskCreateRequest;
 import com.example.loan.management.loanmanager.api.service.LoanService;
 import com.example.loan.management.loanmanager.api.service.TaskService;
-import com.example.loan.management.loanmanager.dao.*;
+import com.example.loan.management.loanmanager.dao.ApprovalHierarchyDao;
+import com.example.loan.management.loanmanager.dao.ApprovalLevelUsersDao;
+import com.example.loan.management.loanmanager.dao.TaskDao;
 import com.example.loan.management.loanmanager.model.*;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,20 +31,23 @@ public class TaskServiceImpl implements TaskService {
     private LoanService loanService;
 
     @Override
-    public UUID create(final Long loanApplicationId,
-                       final UUID userId,
-                       final String level,
-                       final Status status) {
+    public UUID create(final TaskCreateRequest taskCreateRequest) {
+        validateTaskCreateRequest(taskCreateRequest);
+
         final UUID taskId = UUID.randomUUID();
-        final Task task = new Task(taskId, loanApplicationId, userId, level, status);
+        final Task task = new Task(taskId,
+                                   taskCreateRequest.getLoanApplicationId(),
+                                   taskCreateRequest.getUserId(),
+                                   taskCreateRequest.getLevel(),
+                                   taskCreateRequest.getStatus());
 
         taskDao.add(task);
         return taskId;
     }
 
     @Override
-    public UUID approve(final TaskApprovalRequest taskApprovalRequest) {
-        final Task existingTask = taskDao.getById(taskApprovalRequest.getTaskId());
+    public UUID approve(final UUID taskId) {
+        final Task existingTask = taskDao.getById(taskId);
 
         existingTask.setStatus(Status.APPROVED);
         taskDao.add(existingTask);
@@ -99,6 +106,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Set<Task> getAll() {
         return taskDao.getAll();
+    }
+
+    private void validateTaskCreateRequest(final TaskCreateRequest taskCreateRequest) {
+        Preconditions.checkArgument(taskCreateRequest != null, "Task create request cannot be null");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(taskCreateRequest.getLevel()), "Task level cannot be null/empty");
+        Preconditions.checkArgument(taskCreateRequest.getLoanApplicationId() != null, "Task loan application id cannot be null");
+        Preconditions.checkArgument(taskCreateRequest.getUserId() != null, "Task user id cannot be null");
     }
 
     private Task createNewTaskForPreviousLevel(final Task task) {

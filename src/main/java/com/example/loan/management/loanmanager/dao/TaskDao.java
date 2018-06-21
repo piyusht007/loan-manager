@@ -1,10 +1,12 @@
 package com.example.loan.management.loanmanager.dao;
 
 import com.example.loan.management.loanmanager.model.Task;
-import javafx.scene.effect.SepiaTone;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository

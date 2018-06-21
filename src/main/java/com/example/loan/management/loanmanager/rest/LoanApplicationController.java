@@ -25,6 +25,6 @@ public class LoanApplicationController implements LoanApplicationService {
 
     @Override
     public void deleteAll() {
-
+        loanApplicationService.deleteAll();
     }
 }

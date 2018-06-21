@@ -2,11 +2,8 @@ package com.example.loan.management.loanmanager;
 
 import com.example.loan.management.loanmanager.api.*;
 import com.example.loan.management.loanmanager.api.service.*;
-import com.example.loan.management.loanmanager.config.ApplicationConfiguration;
+import com.example.loan.management.loanmanager.config.AppConfig;
 import com.example.loan.management.loanmanager.model.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cucumber.api.PendingException;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -20,7 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ContextConfiguration(classes = { ApplicationConfiguration.class })
+@ContextConfiguration(classes = { AppConfig.class })
 public class LoanApplicationSteps {
 
     private LoanApplicationRequest loanApplicationRequest = new LoanApplicationRequest();
@@ -44,6 +41,7 @@ public class LoanApplicationSteps {
     private LoanApplicationService loanApplicationService;
 
     @Autowired
+    @Qualifier("taskServiceImpl")
     private TaskService taskService;
 
     @Autowired
@@ -85,23 +83,17 @@ public class LoanApplicationSteps {
 
     @When("^underwriter approves it$")
     public void underwriter_approves_it() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(loanApplicationResponse.getTaskId());
-
-        taskId2 = taskService.approve(taskApprovalRequest);
+        taskId2 = taskService.approve(loanApplicationResponse.getTaskId());
     }
 
     @When("^underwriter approves by providing clarifications on it$")
     public void underwriter_approves_by_providing_clarifications_on_it() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(taskId3);
-
-        taskId4 = taskService.approve(taskApprovalRequest);
+        taskId4 = taskService.approve(taskId3);
     }
 
     @When("^risk officer approves it$")
     public void risk_officer_approves_it() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(taskId2);
-
-        taskId3 = taskService.approve(taskApprovalRequest);
+        taskId3 = taskService.approve(taskId2);
     }
 
     @When("^risk officer rejects it$")
@@ -116,23 +108,17 @@ public class LoanApplicationSteps {
 
     @When("^risk officer approves the clarified application$")
     public void risk_officer_approves_the_clarified_application() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(taskId4);
-
-        taskId5 = taskService.approve(taskApprovalRequest);
+        taskId5 = taskService.approve(taskId4);
     }
 
     @When("^finance manager approves it$")
     public void finance_manager_approves_it() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(taskId3);
-
-        taskService.approve(taskApprovalRequest);
+        taskService.approve(taskId3);
     }
 
     @When("^finance manager approves the clarified application$")
     public void finance_manager_approves_the_clarified_application() throws Throwable {
-        final TaskApprovalRequest taskApprovalRequest = new TaskApprovalRequest(taskId5);
-
-        taskService.approve(taskApprovalRequest);
+        taskService.approve(taskId5);
     }
 
     @Then("^(.*) should be disbursed$")

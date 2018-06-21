@@ -1,19 +1,15 @@
 package com.example.loan.management.loanmanager.api.service;
 
-import com.example.loan.management.loanmanager.api.TaskApprovalRequest;
-import com.example.loan.management.loanmanager.model.Status;
+import com.example.loan.management.loanmanager.api.TaskCreateRequest;
 import com.example.loan.management.loanmanager.model.Task;
 
 import java.util.Set;
 import java.util.UUID;
 
 public interface TaskService {
-    UUID create(Long loanApplicationId,
-                UUID userId,
-                String level,
-                Status status);
+    UUID create(TaskCreateRequest taskCreateRequest);
 
-    UUID approve(TaskApprovalRequest taskApprovalRequest);
+    UUID approve(UUID taskId);
 
     UUID needClarification(UUID taskId);
 

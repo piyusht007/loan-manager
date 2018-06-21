@@ -2,6 +2,7 @@ package com.example.loan.management.loanmanager.service;
 
 import com.example.loan.management.loanmanager.api.LoanApplicationRequest;
 import com.example.loan.management.loanmanager.api.LoanApplicationResponse;
+import com.example.loan.management.loanmanager.api.TaskCreateRequest;
 import com.example.loan.management.loanmanager.api.service.LoanApplicationService;
 import com.example.loan.management.loanmanager.api.service.TaskService;
 import com.example.loan.management.loanmanager.dao.ApprovalHierarchyDao;
@@ -9,6 +10,7 @@ import com.example.loan.management.loanmanager.dao.ApprovalLevelUsersDao;
 import com.example.loan.management.loanmanager.dao.LoanApplicationDao;
 import com.example.loan.management.loanmanager.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private LoanApplicationDao loanApplicationDao;
 
     @Autowired
+    @Qualifier("taskServiceImpl")
     private TaskService taskService;
 
     @Autowired
@@ -36,16 +39,23 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         final Long loanApplicationId = loanApplicationDao.add(loanApplication);
         final String firstLevel = getFirstLevelOfApprovalHierarchy();
         final User user = getUserFromGivenHierarchyUserPool(firstLevel);
-
-        final UUID taskId = taskService.create(loanApplication.getApplicationId(),
-                                             user.getId(),
-                                             firstLevel,
-                                             Status.PENDING_APPROVAL);
+        final TaskCreateRequest taskCreateRequest = prepareTaskCreateRequest(loanApplication.getApplicationId(),
+                                                                             user.getId(),
+                                                                             firstLevel,
+                                                                             Status.PENDING_APPROVAL);
+        final UUID taskId = taskService.create(taskCreateRequest);
         final LoanApplicationResponse loanApplicationResponse = new LoanApplicationResponse();
 
         loanApplicationResponse.setLoanApplicationId(loanApplicationId);
         loanApplicationResponse.setTaskId(taskId);
         return loanApplicationResponse;
+    }
+
+    private TaskCreateRequest prepareTaskCreateRequest(final Long applicationId,
+                                                       final UUID id,
+                                                       final String level,
+                                                       final Status status) {
+        return new TaskCreateRequest(applicationId, id, level, status);
     }
 
     @Override
