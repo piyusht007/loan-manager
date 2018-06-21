@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 @CucumberOptions
         (
-                format = { "pretty","json:cucumber/test-report/SearchProject Reports/cucumber.json"},
+                format = { "pretty","html:cucumber/test-reports"},
                 features ={ "classpath:features"},
                 tags= {"@IntegrationTest"},
                 glue = {"com.example.loan.management.loanmanager"}
