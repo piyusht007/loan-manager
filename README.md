@@ -20,4 +20,12 @@ Use following maven command to run integration tests:
 We can see the test reports on following location: 
 **cucumber/test-reports/index.html**
 
+**UML Diagrams:**
+
+**Class Diagram:** src/main/resources/class_diagrams
+
+**Sequence Diagrams:** src/main/resources/sequence_diagrams       
+
+
+
 
