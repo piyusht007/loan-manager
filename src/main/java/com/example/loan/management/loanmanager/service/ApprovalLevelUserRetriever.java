@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ApprovalLevelUserRetriever {
 
-    private Map<String, Iterator<User>> levelToUserIterator = new HashMap<>();
+    private Map<String, Iterator<User>> levelToUserIterator = new ConcurrentHashMap<>();
 
     @Autowired
     private ApprovalLevelUsersDao approvalLevelUsersDao;
