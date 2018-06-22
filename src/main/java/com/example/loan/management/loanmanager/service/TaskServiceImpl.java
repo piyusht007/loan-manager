@@ -4,7 +4,6 @@ import com.example.loan.management.loanmanager.api.TaskCreateRequest;
 import com.example.loan.management.loanmanager.api.service.LoanService;
 import com.example.loan.management.loanmanager.api.service.TaskService;
 import com.example.loan.management.loanmanager.dao.ApprovalHierarchyDao;
-import com.example.loan.management.loanmanager.dao.ApprovalLevelUsersDao;
 import com.example.loan.management.loanmanager.dao.TaskDao;
 import com.example.loan.management.loanmanager.model.*;
 import com.google.common.base.Preconditions;
@@ -25,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
     private ApprovalHierarchyDao approvalHierarchyDao;
 
     @Autowired
-    private ApprovalLevelUsersDao approvalLevelUsersDao;
+    private ApprovalLevelUserRetriever approvalLevelUserRetriever;
 
     @Autowired
     private LoanService loanService;
@@ -118,17 +117,17 @@ public class TaskServiceImpl implements TaskService {
     private Task createNewTaskForPreviousLevel(final Task task) {
         final String currentLevel = task.getLevel();
         final String previousLevel = getPreviousLevelFromApprovalHierarchy(currentLevel);
-        final User user = getUserFromHierarchyLevelUserPool(previousLevel);
+        final UUID userId = approvalLevelUserRetriever.retrieve(previousLevel);
 
-        return new Task(UUID.randomUUID(), task.getLoanApplicationId(), user.getId(), previousLevel, Status.NEED_CLARIFICATION);
+        return new Task(UUID.randomUUID(), task.getLoanApplicationId(), userId, previousLevel, Status.NEED_CLARIFICATION);
     }
 
     private Task createNewTaskForNextLevel(final Task task) {
         final String currentLevel = task.getLevel();
         final String nextLevel = getNextLevelFromApprovalHierarchy(currentLevel);
-        final User user = getUserFromHierarchyLevelUserPool(nextLevel);
+        final UUID userId = approvalLevelUserRetriever.retrieve(nextLevel);
 
-        return new Task(UUID.randomUUID(), task.getLoanApplicationId(), user.getId(), nextLevel, Status.PENDING_APPROVAL);
+        return new Task(UUID.randomUUID(), task.getLoanApplicationId(), userId, nextLevel, Status.PENDING_APPROVAL);
     }
 
     private String getNextLevelFromApprovalHierarchy(final String currentLevel) {
@@ -137,10 +136,5 @@ public class TaskServiceImpl implements TaskService {
 
     private String getPreviousLevelFromApprovalHierarchy(final String currentLevel) {
         return approvalHierarchyDao.getLevelBefore(LoanType.HOME_LOAN, currentLevel);
-    }
-
-    private User getUserFromHierarchyLevelUserPool(final String level) {
-        final ApprovalLevelUsers approvalLevelUsers = approvalLevelUsersDao.get(LoanType.HOME_LOAN, level);
-        return approvalLevelUsers.getUsers().get(0);
     }
 }

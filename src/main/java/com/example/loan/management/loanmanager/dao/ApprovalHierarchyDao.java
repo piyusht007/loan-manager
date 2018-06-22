@@ -111,4 +111,8 @@ public class ApprovalHierarchyDao {
         final ApprovalHierarchy approvalHierarchy = approvalHierarchyOptional.orElse(null);
         return approvalHierarchy == null ? Lists.newArrayList() : approvalHierarchy.getLevels();
     }
+
+    public String getFirstLevelOfApprovalHierarchy(final LoanType loanType) {
+        return getLevels(loanType).get(0);
+    }
 }

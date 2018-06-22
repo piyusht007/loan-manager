@@ -6,14 +6,14 @@ import com.example.loan.management.loanmanager.api.TaskCreateRequest;
 import com.example.loan.management.loanmanager.api.service.LoanApplicationService;
 import com.example.loan.management.loanmanager.api.service.TaskService;
 import com.example.loan.management.loanmanager.dao.ApprovalHierarchyDao;
-import com.example.loan.management.loanmanager.dao.ApprovalLevelUsersDao;
 import com.example.loan.management.loanmanager.dao.LoanApplicationDao;
-import com.example.loan.management.loanmanager.model.*;
+import com.example.loan.management.loanmanager.model.LoanApplication;
+import com.example.loan.management.loanmanager.model.LoanType;
+import com.example.loan.management.loanmanager.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -31,16 +31,16 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private ApprovalHierarchyDao approvalHierarchyDao;
 
     @Autowired
-    private ApprovalLevelUsersDao approvalLevelUsersDao;
+    private ApprovalLevelUserRetriever approvalLevelUserRetriever;
 
     @Override
     public LoanApplicationResponse create(final LoanApplicationRequest loanApplicationRequest) {
         final LoanApplication loanApplication = mapToLoanApplication(loanApplicationRequest);
         final Long loanApplicationId = loanApplicationDao.add(loanApplication);
-        final String firstLevel = getFirstLevelOfApprovalHierarchy();
-        final User user = getUserFromGivenHierarchyUserPool(firstLevel);
+        final String firstLevel = approvalHierarchyDao.getFirstLevelOfApprovalHierarchy(LoanType.HOME_LOAN);
+        final UUID userId = approvalLevelUserRetriever.retrieve(firstLevel);
         final TaskCreateRequest taskCreateRequest = prepareTaskCreateRequest(loanApplication.getApplicationId(),
-                                                                             user.getId(),
+                                                                             userId,
                                                                              firstLevel,
                                                                              Status.PENDING_APPROVAL);
         final UUID taskId = taskService.create(taskCreateRequest);
@@ -61,16 +61,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     @Override
     public void deleteAll() {
         loanApplicationDao.deleteAll();
-    }
-
-    private User getUserFromGivenHierarchyUserPool(final String firstLevel) {
-        final ApprovalLevelUsers approvalLevelUsers = approvalLevelUsersDao.get(LoanType.HOME_LOAN, firstLevel);
-        return approvalLevelUsers.getUsers().get(0);
-    }
-
-    private String getFirstLevelOfApprovalHierarchy() {
-        final List<String> levels = approvalHierarchyDao.getLevels(LoanType.HOME_LOAN);
-        return levels.get(0);
     }
 
     private LoanApplication mapToLoanApplication(final LoanApplicationRequest loanApplicationRequest) {
