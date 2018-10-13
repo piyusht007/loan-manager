@@ -24,7 +24,20 @@ We can see the test reports on following location:
 
 **Class Diagram:** src/main/resources/class_diagrams
 
-**Sequence Diagrams:** src/main/resources/sequence_diagrams       
+![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/class_diagrams/loan_manager_class_diagram.png)
+
+**Sequence Diagrams:** src/main/resources/sequence_diagrams 
+
+![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Approval_Flow.png)
+
+![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Need_Clarification_Flow.png)
+
+![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Rejection_Flow.png)
+
+![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/New_Loan_Application_Flow.png)
+
+      
+
 
 
 
