@@ -24,17 +24,17 @@ We can see the test reports on following location:
 
 **Class Diagram:** src/main/resources/class_diagrams
 
-![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/class_diagrams/loan_manager_class_diagram.png)
+<kbd><img src="https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/class_diagrams/loan_manager_class_diagram.png"></kbd>
 
 **Sequence Diagrams:** src/main/resources/sequence_diagrams 
 
-![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Approval_Flow.png)
+<kbd><img src="https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Approval_Flow.png"></kbd>
 
-![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Need_Clarification_Flow.png)
+<kbd><img src="https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Need_Clarification_Flow.png"></kbd>
 
-![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Rejection_Flow.png)
+<kbd><img src="https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/Existing_Loan_Application_Rejection_Flow.png"></kbd>
 
-![](https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/New_Loan_Application_Flow.png)
+<kbd><img src="https://github.com/piyusht007/loan-manager/blob/master/src/main/resources/sequence_diagrams/New_Loan_Application_Flow.png"></kbd>
 
       
 
